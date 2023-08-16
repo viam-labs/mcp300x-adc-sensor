@@ -16,11 +16,11 @@ import viam
 import busio
 import digitalio
 import board
-import adafruit_mcp3xxx.mcp3008 as MCP
+import adafruit_mcp3xxx.mcp3008 as MCP3008
+import adafruit_mcp3xxx.mcp3004 as MCP3004
 from adafruit_mcp3xxx.analog_in import AnalogIn
+from .utils import get_gpio_from_pin
 # import RPi.GPIO as GPIO
-
-
 
 LOGGER = getLogger(__name__)
 
@@ -66,9 +66,11 @@ class mcp3xxx(Sensor, Reconfigurable):
         self.sensor_pin = int(config.attributes.fields["sensor_pin"].number_value)
 
         self.channel_map = dict(config.attributes.fields["channel_map"].struct_value)
-        # imput = int(config.attributes.fields["channel_map"].number_value)
+        # input = int(config.attributes.fields["channel_map"].number_value)
+
         LOGGER.info(f'TYPE fo channel map is {type(self.channel_map)}')
         LOGGER.info(f"CHANNEL MAP IS {self.channel_map}")
+
         self.channel_amount = int(config.attributes.fields["channel_amount"].number_value)
         return
 
@@ -91,16 +93,21 @@ class mcp3xxx(Sensor, Reconfigurable):
         spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
 
         # Create the cs (chip select) with a gpio pin variable, we are using 22 gpio 25
-        my_pin = f"D{self.sensor_pin}"
+        my_pin = f"D{get_gpio_from_pin(self.sensor_pin)}"
+        
         cs = digitalio.DigitalInOut(getattr(board, my_pin))
 
+        # cs = digitalio.DigitalInOut(board.D25)
         # Create the MCP3008 object
         # mcp = MCP.MCP3008(spi, cs)
 
         # Create the MCP300x object
         mcp_type= f"MCP300{self.channel_amount}"
-        if self.channel_amount == 8:
-            mcp = MCP.MCP3008(spi, cs)
+        # if self.channel_amount == 8:
+        #     mcp = MCP.MCP3008(spi, cs)
+        #this is currently overriding
+        mcp = MCP3004.MCP3004(spi, cs)
+        mcp = MCP3008.MCP3008(spi, cs)
         # mcp = getattr(MCP,mcp_type)
         LOGGER.error(f"MCP IS {mcp}")
         LOGGER.error(f"type of mcp is {type(mcp)}")
@@ -115,12 +122,13 @@ class mcp3xxx(Sensor, Reconfigurable):
             my_chan = f"P{chan}"
             if chan ==0:
                 LOGGER.error("REACHED 0")
-                chanchan = AnalogIn(mcp, MCP.P0)
+                chanchan = AnalogIn(mcp, MCP3008.P0)
+                LOGGER.warn(f"READING from channel 0 is {chanchan.value}")
             if chan ==1:
                 LOGGER.error("REACHED 1")
-                chanchan = AnalogIn(mcp, MCP.P1)
+                chanchan = AnalogIn(mcp, MCP3008.P1)
+                LOGGER.warn(f"READING from channel 1 is {chanchan.value}")
             readings[label] = chanchan.value
       
         # Return readings
         return readings
-    
