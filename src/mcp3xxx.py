@@ -16,11 +16,8 @@ import viam
 import busio
 import digitalio
 import board
-import adafruit_mcp3xxx.mcp3008 as MCP3008
-import adafruit_mcp3xxx.mcp3004 as MCP3004
-import adafruit_mcp3xxx.mcp3002 as MCP3002
+import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
-from .utils import get_gpio_from_pin
 # import RPi.GPIO as GPIO
 
 LOGGER = getLogger(__name__)
@@ -30,8 +27,7 @@ class mcp3xxx(Sensor, Reconfigurable):
     MODEL: ClassVar[Model] = Model(ModelFamily("viamlabs", "sensor"), "mcp3xxx")
 
     # create any class parameters here
-    sensor_pin_type1: int
-    sensor_pin_type2: int
+    sensor_pin: int
 
     # Constructor
     @classmethod
@@ -44,17 +40,12 @@ class mcp3xxx(Sensor, Reconfigurable):
     @classmethod
     def validate(cls, config: ComponentConfig):
         # here we validate config, the following is just an example and should be updated as needed
-        sensor_pin_type1 = config.attributes.fields["sensor_pin_type1"].number_value
-        sensor_pin_type2 = config.attributes.fields["sensor_pin_type2"].number_value
+        sensor_pin = config.attributes.fields["sensor_pin"].number_value
         # channel_map = config.attributes.fields["channel_map"].number_value
         channel_map = config.attributes.fields["channel_map"].struct_value
-        
         channel_amount = config.attributes.fields["channel_amount"].number_value
 
-        if sensor_pin_type1 == "":
-            raise Exception("A sensor_pin must be defined")
-        
-        if sensor_pin_type2 == "":
+        if sensor_pin == "":
             raise Exception("A sensor_pin must be defined")
         
         #check map not defined ???
@@ -69,15 +60,11 @@ class mcp3xxx(Sensor, Reconfigurable):
     # Handles attribute reconfiguration
     def reconfigure(self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]):
         # here we initialize the resource instance, the following is just an example and should be updated as needed
-        self.sensor_pin_type1 = int(config.attributes.fields["sensor_pin_type1"].number_value)
-        self.sensor_pin_type2 = int(config.attributes.fields["sensor_pin_type2"].number_value)
-
+        self.sensor_pin = int(config.attributes.fields["sensor_pin"].number_value)
         self.channel_map = dict(config.attributes.fields["channel_map"].struct_value)
-        # input = int(config.attributes.fields["channel_map"].number_value)
-
+        # imput = int(config.attributes.fields["channel_map"].number_value)
         LOGGER.info(f'TYPE fo channel map is {type(self.channel_map)}')
         LOGGER.info(f"CHANNEL MAP IS {self.channel_map}")
-
         self.channel_amount = int(config.attributes.fields["channel_amount"].number_value)
         return
 
@@ -100,52 +87,38 @@ class mcp3xxx(Sensor, Reconfigurable):
         spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
 
         # Create the cs (chip select) with a gpio pin variable, we are using 22 gpio 25
-        my_pin = f"D{get_gpio_from_pin(self.sensor_pin_type1)}"
-        # Create another cs (chip select) with a gpio pin variable, we are using 40 gpio 21
-        my_pin_2 = f"D{get_gpio_from_pin(self.sensor_pin_type2)}"
-        
+        my_pin = f"D{self.sensor_pin}"
         cs = digitalio.DigitalInOut(getattr(board, my_pin))
-        cs2 = digitalio.DigitalInOut(getattr(board, my_pin_2))
 
-        # cs = digitalio.DigitalInOut(board.D25)
         # Create the MCP3008 object
         # mcp = MCP.MCP3008(spi, cs)
 
         # Create the MCP300x object
         mcp_type= f"MCP300{self.channel_amount}"
-        # if self.channel_amount == 8:
-        #     mcp = MCP.MCP3008(spi, cs)
-        # currently these are just overriding each other
-        mcp = MCP3008.MCP3008(spi, cs)
-        mcp2 = MCP3008.MCP3008(spi, cs2)
-
-        #mcp = MCP3004.MCP3004(spi, cs)
-        #mcp = MCP3002.MCP3002(spi, cs)
+        if self.channel_amount == 8:
+            mcp = MCP.MCP3008(spi, cs)
         # mcp = getattr(MCP,mcp_type)
-        LOGGER.info(f"MCP IS {mcp}")
-        LOGGER.info(f"type of mcp is {type(mcp)}")
+        LOGGER.error(f"MCP IS {mcp}")
+        LOGGER.error(f"type of mcp is {type(mcp)}")
         # mcp(spi, cs)
 
         # Iterating over values
         for label, channel in self.channel_map.items():
-            LOGGER.info(f"int he loop channel is {channel}")
+            LOGGER.info(f"in the loop channel is {channel}")
             LOGGER.info(f"in the loop label is {label}")
             # Create an analog input channel on Pin ?
             chan = int(channel)
             my_chan = f"P{chan}"
             if chan ==0:
-                LOGGER.info("REACHED 0")
-                chanchan = AnalogIn(mcp, MCP3008.P0)
-                LOGGER.warn(f"READING from channel 0 is {chanchan.value}")
+                LOGGER.error("REACHED 0")
+                chanchan = AnalogIn(mcp, MCP.P0)
             if chan ==1:
-                LOGGER.info("REACHED 1")
-                chanchan = AnalogIn(mcp, MCP3008.P1)
-                LOGGER.warn(f"READING from channel 1 is {chanchan.value}")
-            
-            #get attr MCP3008.P1
-            
+                LOGGER.error("REACHED 1")
+                chanchan = AnalogIn(mcp, MCP.P1)
+            if chan ==2:
+                LOGGER.error("REACHED 2")
+                chanchan = AnalogIn(mcp, MCP.P2)    
             readings[label] = chanchan.value
       
         # Return readings
         return readings
-    
