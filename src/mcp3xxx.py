@@ -16,8 +16,7 @@ import viam
 import busio
 import digitalio
 import board
-import adafruit_mcp3xxx.mcp3008 as MCP8
-import adafruit_mcp3xxx.mcp3002 as MCP2
+import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
 # import RPi.GPIO as GPIO
 
@@ -55,6 +54,8 @@ class mcp3xxx(Sensor, Reconfigurable):
         
         if channel_amount == "":
             raise Exception("A channel_amount must be defined, differentiating between different mcp300x's")
+        # else :
+        #    return error for all other numbers
 
         return
 
@@ -92,17 +93,7 @@ class mcp3xxx(Sensor, Reconfigurable):
         cs = digitalio.DigitalInOut(getattr(board, my_pin))
 
         # Create the MCP3008 object
-        # mcp = MCP.MCP3008(spi, cs)
-
-        # Create the MCP300x object
-        mcp_type= f"MCP300{self.channel_amount}"
-        if self.channel_amount == 2:
-            mcp = MCP2.MCP3002(spi, cs)  
-        elif self.channel_amount == 8:
-            mcp = MCP8.MCP3008(spi, cs) 
-        #else :
-        #    return error for all other numbers
-        # mcp = getattr(MCP,mcp_type)
+        mcp = MCP.MCP3008(spi, cs)
 
         # Iterating over values
         for label, channel in self.channel_map.items():
@@ -111,7 +102,8 @@ class mcp3xxx(Sensor, Reconfigurable):
             # Create an analog input channel on Pin ?
             chan = int(channel)
             LOGGER.info(f"chan is {chan}")
-            readings[label] = AnalogIn(mcp, chan).value
+            #readings[label] = AnalogIn(mcp, chan).value
+            readings[label] = mcp.read(chan)
       
         # Return readings
         return readings
