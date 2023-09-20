@@ -19,7 +19,7 @@ LOGGER = getLogger(__name__)
 
 class mcp3xxx(Sensor, Reconfigurable):
     # Defines new model's colon-delimited-triplet
-    MODEL: ClassVar[Model] = Model(ModelFamily("viamlabs", "sensor"), "mcp3xxx")
+    MODEL: ClassVar[Model] = Model(ModelFamily("viamlabs", "sensor"), "mcp300x")
 
     # Creates class parameters
     sensor_pin: int
@@ -67,15 +67,16 @@ class mcp3xxx(Sensor, Reconfigurable):
         # Dictionary 
         readings = {}
 
-        # Sensor pin logic
+        # Sensor Pin Logic
         # Creates the SPI bus
         spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
 
-        # Creates the cs (chip select) with a gpio pin variable, we are using GPIO 8 (SPI Chip Select 0), so 0 for the config
+        # Creates the cs (chip select) with a gpio pin variable, we are using 24 GPIO 8 (SPI Chip Select 0), so 8 for the config
         my_pin = f"D{self.sensor_pin}"
+        # utils.py file maps the pin using map_pin_gpio[24] = 8
         cs = digitalio.DigitalInOut(getattr(board, my_pin))
 
-        # Creates the MCP3008 object
+        # Creates the MCP3008 object, works with MCP3002 and MCP3004 since it is all encompassing
         mcp = MCP.MCP3008(spi, cs)
 
         # Iterates over values
