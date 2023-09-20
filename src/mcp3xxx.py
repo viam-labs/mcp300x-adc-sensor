@@ -1,32 +1,27 @@
-from typing import ClassVar, Mapping, Sequence, Any, Dict, Optional, Tuple, Final, List, cast
+from typing import ClassVar, Mapping, Any, Dict, Optional, List, cast
 from typing_extensions import Self
 
 from viam.module.types import Reconfigurable
 from viam.proto.app.robot import ComponentConfig
-from viam.proto.common import ResourceName, Vector3
+from viam.proto.common import ResourceName
 from viam.resource.base import ResourceBase
 from viam.resource.types import Model, ModelFamily
 
 from viam.components.sensor import Sensor
 from viam.logging import getLogger
 
-#import time
-#import asyncio
-import viam
 import busio
 import digitalio
 import board
 import adafruit_mcp3xxx.mcp3008 as MCP
-from adafruit_mcp3xxx.analog_in import AnalogIn
-# import RPi.GPIO as GPIO
 
 LOGGER = getLogger(__name__)
 
 class mcp3xxx(Sensor, Reconfigurable):
-    # Here is where we define our new model's colon-delimited-triplet
+    # Defines new model's colon-delimited-triplet
     MODEL: ClassVar[Model] = Model(ModelFamily("viamlabs", "sensor"), "mcp3xxx")
 
-    # create any class parameters here
+    # Creates class parameters
     sensor_pin: int
 
     # Constructor
@@ -39,71 +34,56 @@ class mcp3xxx(Sensor, Reconfigurable):
     # Validates JSON Configuration
     @classmethod
     def validate(cls, config: ComponentConfig):
-        # here we validate config, the following is just an example and should be updated as needed
         sensor_pin = config.attributes.fields["sensor_pin"].number_value
-        # channel_map = config.attributes.fields["channel_map"].number_value
         channel_map = config.attributes.fields["channel_map"].struct_value
-        channel_amount = config.attributes.fields["channel_amount"].number_value
 
         if sensor_pin == "":
             raise Exception("A sensor_pin must be defined")
         
-        #check map not defined ???
-        # if channel_map == 0:
-        #     raise Exception("A channel_map must not be empty")
-        
-        if channel_amount == "":
-            raise Exception("A channel_amount must be defined, differentiating between different mcp300x's")
-        # else :
-        #    return error for all other numbers
+        if channel_map == "":
+            raise Exception("Channel map must be defined, refers to sensor type and which channel it connects to")
 
         return
 
     # Handles attribute reconfiguration
     def reconfigure(self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]):
-        # here we initialize the resource instance, the following is just an example and should be updated as needed
+        # Initializes the resource instance
         self.sensor_pin = int(config.attributes.fields["sensor_pin"].number_value)
         self.channel_map = dict(config.attributes.fields["channel_map"].struct_value)
-        # imput = int(config.attributes.fields["channel_map"].number_value)
-        LOGGER.info(f'TYPE of channel map is {type(self.channel_map)}')
-        LOGGER.info(f"CHANNEL MAP IS {self.channel_map}")
-        self.channel_amount = int(config.attributes.fields["channel_amount"].number_value)
+        LOGGER.info(f"Channel map is {self.channel_map}")
         return
 
-    """ Implement the methods the Viam RDK defines for the Sensor API (rdk:components:sensor) """
-    # Implement the Viam Sensor API's get_readings() method
+    """ Implements the methods the Viam RDK defines for the Sensor API (rdk:components:sensor) """
+    # Implements the Viam Sensor API's get_readings() method
     async def get_readings(
         self, *, extra: Optional[Mapping[str, Any]] = None, timeout: Optional[float] = None, **kwargs
     ) -> Mapping[str, Any]:
         """
-        Obtain the measurements/data specific to this sensor.
+        Obtains the measurements/data specific to this sensor.
         Returns:
             Mapping[str, Any]: The measurements. Can be of any type.
         """
 
-        #dictionary 
+        # Dictionary 
         readings = {}
 
-        # SENSOR PIN LOGIC
-        # Create the SPI bus
+        # Sensor pin logic
+        # Creates the SPI bus
         spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
 
-        # Create the cs (chip select) with a gpio pin variable, we are using 22 gpio 25
+        # Creates the cs (chip select) with a gpio pin variable, we are using GPIO 8 (SPI Chip Select 0), so 0 for the config
         my_pin = f"D{self.sensor_pin}"
         cs = digitalio.DigitalInOut(getattr(board, my_pin))
 
-        # Create the MCP3008 object
+        # Creates the MCP3008 object
         mcp = MCP.MCP3008(spi, cs)
 
-        # Iterating over values
+        # Iterates over values
         for label, channel in self.channel_map.items():
-            LOGGER.info(f"in the loop channel is {channel}")
-            LOGGER.info(f"in the loop label is {label}")
-            # Create an analog input channel on Pin ?
+            LOGGER.info(f"loop channel is {channel} and loop label is {label}")
+            # Create an analog input channel
             chan = int(channel)
-            LOGGER.info(f"chan is {chan}")
-            #readings[label] = AnalogIn(mcp, chan).value
             readings[label] = mcp.read(chan)
-      
+
         # Return readings
         return readings
