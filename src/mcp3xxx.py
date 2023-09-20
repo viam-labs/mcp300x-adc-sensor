@@ -16,7 +16,8 @@ import viam
 import busio
 import digitalio
 import board
-import adafruit_mcp3xxx.mcp3008 as MCP
+import adafruit_mcp3xxx.mcp3008 as MCP8
+import adafruit_mcp3xxx.mcp3002 as MCP2
 from adafruit_mcp3xxx.analog_in import AnalogIn
 # import RPi.GPIO as GPIO
 
@@ -63,7 +64,7 @@ class mcp3xxx(Sensor, Reconfigurable):
         self.sensor_pin = int(config.attributes.fields["sensor_pin"].number_value)
         self.channel_map = dict(config.attributes.fields["channel_map"].struct_value)
         # imput = int(config.attributes.fields["channel_map"].number_value)
-        LOGGER.info(f'TYPE fo channel map is {type(self.channel_map)}')
+        LOGGER.info(f'TYPE of channel map is {type(self.channel_map)}')
         LOGGER.info(f"CHANNEL MAP IS {self.channel_map}")
         self.channel_amount = int(config.attributes.fields["channel_amount"].number_value)
         return
@@ -95,12 +96,13 @@ class mcp3xxx(Sensor, Reconfigurable):
 
         # Create the MCP300x object
         mcp_type= f"MCP300{self.channel_amount}"
-        if self.channel_amount == 8:
-            mcp = MCP.MCP3008(spi, cs)
+        if self.channel_amount == 2:
+            mcp = MCP2.MCP3002(spi, cs)  
+        elif self.channel_amount == 8:
+            mcp = MCP8.MCP3008(spi, cs) 
+        #else :
+        #    return error for all other numbers
         # mcp = getattr(MCP,mcp_type)
-        LOGGER.error(f"MCP IS {mcp}")
-        LOGGER.error(f"type of mcp is {type(mcp)}")
-        # mcp(spi, cs)
 
         # Iterating over values
         for label, channel in self.channel_map.items():
@@ -108,17 +110,8 @@ class mcp3xxx(Sensor, Reconfigurable):
             LOGGER.info(f"in the loop label is {label}")
             # Create an analog input channel on Pin ?
             chan = int(channel)
-            my_chan = f"P{chan}"
-            if chan ==0:
-                LOGGER.error("REACHED 0")
-                chanchan = AnalogIn(mcp, MCP.P0)
-            if chan ==1:
-                LOGGER.error("REACHED 1")
-                chanchan = AnalogIn(mcp, MCP.P1)
-            if chan ==2:
-                LOGGER.error("REACHED 2")
-                chanchan = AnalogIn(mcp, MCP.P2)    
-            readings[label] = chanchan.value
+            LOGGER.info(f"chan is {chan}")
+            readings[label] = AnalogIn(mcp, chan).value
       
         # Return readings
         return readings
