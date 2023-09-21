@@ -39,7 +39,7 @@ class mcp3xxx(Sensor, Reconfigurable):
 
         if sensor_pin == "":
             raise Exception("A sensor_pin must be defined")
-        
+
         if channel_map == "":
             raise Exception("Channel map must be defined, refers to sensor type and which channel it connects to")
 
@@ -64,7 +64,7 @@ class mcp3xxx(Sensor, Reconfigurable):
             Mapping[str, Any]: The measurements. Can be of any type.
         """
 
-        # Dictionary 
+        # Dictionary
         readings = {}
 
         # Sensor Pin Logic
