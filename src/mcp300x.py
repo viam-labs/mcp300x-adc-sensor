@@ -73,7 +73,6 @@ class mcp3xxx(Sensor, Reconfigurable):
 
         # Creates the cs (chip select) with a gpio pin variable, we are using 24 GPIO 8 (SPI Chip Select 0), so 8 for the config
         my_pin = f"D{self.sensor_pin}"
-        # utils.py file maps the pin using map_pin_gpio[24] = 8
         cs = digitalio.DigitalInOut(getattr(board, my_pin))
 
         # Creates the MCP3008 object, works with MCP3002 and MCP3004 since it is all encompassing
