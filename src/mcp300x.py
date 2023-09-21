@@ -63,8 +63,6 @@ class mcp3xxx(Sensor, Reconfigurable):
         Returns:
             Mapping[str, Any]: The measurements. Can be of any type.
         """
-        readings = {}
-
         # Sensor Pin Logic
         # Creates the SPI bus
         spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
@@ -76,6 +74,7 @@ class mcp3xxx(Sensor, Reconfigurable):
         # Creates the MCP3008 object, works with MCP3002 and MCP3004 since it is all encompassing
         mcp = MCP.MCP3008(spi, cs)
 
+        readings = {}
         # Iterates over values
         for label, channel in self.channel_map.items():
             LOGGER.info(f"loop channel is {channel} and loop label is {label}")
