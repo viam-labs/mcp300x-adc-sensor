@@ -38,10 +38,10 @@ class mcp3xxx(Sensor, Reconfigurable):
         channel_map = config.attributes.fields["channel_map"].struct_value
 
         if sensor_pin == "":
-            raise Exception("A sensor_pin must be defined")
+            raise NameError("A sensor_pin must be defined")
 
         if channel_map == "":
-            raise Exception("Channel map must be defined, refers to sensor type and which channel it connects to")
+            raise NameError("Channel map must be defined, refers to sensor type and which channel it connects to")
 
         return
 
