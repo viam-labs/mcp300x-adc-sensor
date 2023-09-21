@@ -63,8 +63,6 @@ class mcp3xxx(Sensor, Reconfigurable):
         Returns:
             Mapping[str, Any]: The measurements. Can be of any type.
         """
-
-        # Dictionary
         readings = {}
 
         # Sensor Pin Logic
@@ -85,5 +83,4 @@ class mcp3xxx(Sensor, Reconfigurable):
             chan = int(channel)
             readings[label] = mcp.read(chan)
 
-        # Return readings
         return readings
