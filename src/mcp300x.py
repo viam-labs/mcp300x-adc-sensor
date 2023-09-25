@@ -38,10 +38,10 @@ class mcp3xxx(Sensor, Reconfigurable):
         channel_map = config.attributes.fields["channel_map"].struct_value
 
         if sensor_pin == "":
-            raise Exception("A sensor_pin must be defined")
-        
+            raise NameError("A sensor_pin must be defined")
+
         if channel_map == "":
-            raise Exception("Channel map must be defined, refers to sensor type and which channel it connects to")
+            raise NameError("Channel map must be defined, refers to sensor type and which channel it connects to")
 
         return
 
@@ -63,22 +63,18 @@ class mcp3xxx(Sensor, Reconfigurable):
         Returns:
             Mapping[str, Any]: The measurements. Can be of any type.
         """
-
-        # Dictionary 
-        readings = {}
-
         # Sensor Pin Logic
         # Creates the SPI bus
         spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
 
         # Creates the cs (chip select) with a gpio pin variable, we are using 24 GPIO 8 (SPI Chip Select 0), so 8 for the config
         my_pin = f"D{self.sensor_pin}"
-        # utils.py file maps the pin using map_pin_gpio[24] = 8
         cs = digitalio.DigitalInOut(getattr(board, my_pin))
 
         # Creates the MCP3008 object, works with MCP3002 and MCP3004 since it is all encompassing
         mcp = MCP.MCP3008(spi, cs)
 
+        readings = {}
         # Iterates over values
         for label, channel in self.channel_map.items():
             LOGGER.info(f"loop channel is {channel} and loop label is {label}")
@@ -86,5 +82,4 @@ class mcp3xxx(Sensor, Reconfigurable):
             chan = int(channel)
             readings[label] = mcp.read(chan)
 
-        # Return readings
         return readings
