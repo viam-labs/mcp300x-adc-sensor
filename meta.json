@@ -2,7 +2,7 @@
   "module_id": "hazalmestci:mcp300x-adc-sensor",
   "visibility": "public",
   "url": "https://github.com/viam-labs/mcp300x-adc-sensor",
-  "description": "The module provides analog to digital conversion capabilities for MCP300x SPI ADC's.",
+  "description": "The module provides analog-to-digital conversion capabilities for MCP3002, MCP3004, and MCP3008 SPI ADCs for Raspberry Pi.",
   "models": [
     {
       "api": "rdk:component:sensor",
