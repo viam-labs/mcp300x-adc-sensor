@@ -70,19 +70,6 @@ For example, if you have a moisture sensor attached to channel 0, a temperature 
 
 Since you are getting readings from three separate channels, you won't be able to use the MCP3002 sensor for this use case, and will need either an MCP3004 or an MCP3008.
 
-## Local Development
-
-To use the `mcp300x-adc-sensor` module with a local install, clone this repository to your machine’s computer, navigate to the `module` directory, and run:
-
-```go
-go build
-```
-
-On your robot’s page in the [Viam app](https://app.viam.com/), enter
-the [module’s executable path](/registry/create/#prepare-the-module-for-execution), then click **Add module**.
-The name must use only lowercase characters.
-Then, click **Save config**.
-
 ## Next Steps
 
 1. To test your sensor, go to the [**Control** tab](https://docs.viam.com/manage/fleet/robots/#control) and test that you are getting readings.
