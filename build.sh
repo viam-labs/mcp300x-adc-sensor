@@ -16,5 +16,5 @@ if ! uv pip install pyinstaller -q; then
   exit 1
 fi
 
-uv run PyInstaller --onefile --hidden-import="googleapiclient" src/main.py
+uv run pyinstaller --onefile --hidden-import="googleapiclient" src/main.py
 tar -czvf dist/archive.tar.gz ./dist/main
