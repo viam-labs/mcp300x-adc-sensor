@@ -9,5 +9,13 @@
       "model": "hazalmestci:sensor:mcp300x"
     }
   ],
-  "entrypoint": "run.sh"
+  "entrypoint": "dist/main",
+  "build": {
+    "build": "./build.sh",
+    "setup": "./setup.sh",
+    "path": "dist/archive.tar.gz",
+    "arch": [
+      "linux/arm64"
+    ]
+  }
 }
