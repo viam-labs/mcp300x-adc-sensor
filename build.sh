@@ -10,6 +10,8 @@ PYTHON="$VENV_NAME/bin/python"
 
 export PATH=$PATH:$HOME/.local/bin
 
+source $VENV_NAME/bin/activate
+
 if ! uv pip install pyinstaller -q; then
   exit 1
 fi
