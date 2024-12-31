@@ -1,5 +1,2 @@
 viam-sdk
-adafruit_mcp3xxx
-busio
-digitalio
-board
+adafruit-circuitpython-mcp3xxx
