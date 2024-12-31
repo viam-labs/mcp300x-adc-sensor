@@ -20,6 +20,12 @@ if [ ! "$(command -v uv)" ]; then
   curl -LsSf https://astral.sh/uv/install.sh | sh
 fi
 
-uv venv $VENV_NAME
+if ! uv venv $VENV_NAME; then
+  echo "unable to create required virtual environment"
+  exit 1
+fi
 
-uv pip sync requirements.txt
+if ! uv pip sync requirements.txt; then
+  echo "unable to sync requirements to venv"
+  exit 1
+fi
