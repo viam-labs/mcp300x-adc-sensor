@@ -25,6 +25,8 @@ if ! uv venv $VENV_NAME; then
   exit 1
 fi
 
+source $VENV_NAME/bin/activate
+
 if ! uv pip sync requirements.txt; then
   echo "unable to sync requirements to venv"
   exit 1
