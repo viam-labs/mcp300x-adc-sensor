@@ -1,2 +1,3 @@
 viam-sdk
 adafruit-circuitpython-mcp3xxx
+google-api-python-client
