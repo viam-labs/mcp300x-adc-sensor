@@ -20,7 +20,7 @@ LOGGER = getLogger(__name__)
 
 class mcp3xxx(Sensor, Reconfigurable):
     # Defines new model's colon-delimited-triplet
-    MODEL: ClassVar[Model] = Model(ModelFamily("viamlabs", "sensor"), "mcp300x")
+    MODEL: ClassVar[Model] = Model(ModelFamily("hazalmestci", "sensor"), "mcp300x")
 
     # Creates class parameters
     sensor_pin: int
