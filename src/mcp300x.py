@@ -59,12 +59,6 @@ class mcp3xxx(Sensor, Reconfigurable):
         self.channel_map = dict(config.attributes.fields["channel_map"].struct_value)
         LOGGER.debug(f"Channel map is {self.channel_map}")
 
-        if getattr(self, "spi") is not None:
-            self.spi.deinit()
-
-        if getattr(self, "cs") is not None:
-            self.cs.deinit()
-
         # Sensor Pin Logic
         # Creates the SPI bus
         self.spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
