@@ -1,4 +1,5 @@
 {
+  "$schema": "https://dl.viam.dev/module.schema.json",
   "module_id": "hazalmestci:mcp300x-adc-sensor",
   "visibility": "public",
   "url": "https://github.com/viam-labs/mcp300x-adc-sensor",
@@ -6,7 +7,9 @@
   "models": [
     {
       "api": "rdk:component:sensor",
-      "model": "hazalmestci:sensor:mcp300x"
+      "model": "hazalmestci:sensor:mcp300x",
+      "short_description": "analog-to-digital conversion (ADC) capabilities for MCP3002, MCP3004, and MCP3008 chips using SPI",
+      "markdown_link": "README.md#configure-your-mcp300x-adc-sensor"
     }
   ],
   "entrypoint": "dist/main",
