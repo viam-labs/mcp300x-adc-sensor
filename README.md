@@ -13,19 +13,7 @@ Wiring for these sensors is different and you should refer to data sheets for ea
 To use this module, follow the instructions to [add a module from the Viam Registry](https://docs.viam.com/registry/configure/#add-a-modular-resource-from-the-viam-registry) and select the `hazalmestci:sensor:mcp300x` model from the [`mcp300x-adc-sensor` module](https://app.viam.com/module/hazalmestci/mcp300x-adc-sensor).
 
 ## Configure your `mcp300x-adc-sensor`
-
-> [!NOTE]
-> Before configuring your `mcp300x-adc-sensor`, you must [create a machine](https://docs.viam.com/manage/fleet/machines/#add-a-new-machine).
-
-Navigate to the **Config** tab of your machine's page in [the Viam app](https://app.viam.com/).
-Click on the **Components** subtab and click **Create component**.
-Select the `sensor` type, then select the `hazalmestci:sensor:mcp300x` model.
-Click **Add module**, then enter a name for your sensor and click **Create**.
-
-On the new component panel, copy and paste the following attribute template into your sensor’s **Attributes** box:
-
-> [!NOTE]
-> For more information, see [Configure a Machine](https://docs.viam.com/manage/configuration/).
+Copy and paste the following attribute template into your sensor’s **Attributes** box:
 
 ```json
 {
@@ -36,8 +24,6 @@ On the new component panel, copy and paste the following attribute template into
   }
 }
 ```
-
-Save your config.
 
 ### Attributes
 
