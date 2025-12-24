@@ -1,13 +1,13 @@
 {
   "$schema": "https://dl.viam.dev/module.schema.json",
-  "module_id": "viam:mcp300x-adc-sensor",
+  "module_id": "viam-labs:mcp300x-adc-sensor",
   "visibility": "public",
   "url": "https://github.com/viam-labs/mcp300x-adc-sensor",
   "description": "The module provides analog-to-digital conversion capabilities for MCP3002, MCP3004, and MCP3008 SPI ADCs for Raspberry Pi.",
   "models": [
     {
       "api": "rdk:component:sensor",
-      "model": "viam:mcp300x:sensor",
+      "model": "viam-labs:mcp300x:sensor",
       "short_description": "analog-to-digital conversion (ADC) capabilities for MCP3002, MCP3004, and MCP3008 chips using SPI",
       "markdown_link": "README.md#configure-your-mcp300x-adc-sensor"
     }

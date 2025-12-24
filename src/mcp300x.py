@@ -20,7 +20,7 @@ LOGGER = getLogger(__name__)
 
 class mcp3xxx(Sensor, EasyResource):
     # Defines new model's colon-delimited-triplet
-    MODEL: ClassVar[Model] = Model(ModelFamily("viam", "mcp300x"), "sensor")
+    MODEL: ClassVar[Model] = Model(ModelFamily("viam-labs", "mcp300x"), "sensor")
 
     # Creates class parameters
     sensor_pin: int
