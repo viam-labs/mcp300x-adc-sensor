@@ -15,4 +15,4 @@ if ! uv pip install pyinstaller -q; then
 fi
 
 uv run pyinstaller --onefile -p src src/main.py
-tar -czvf dist/archive.tar.gz ./dist/main
+tar -czvf dist/archive.tar.gz meta.json ./dist/main

@@ -6,7 +6,7 @@ from viam.proto.app.robot import ComponentConfig
 from viam.proto.common import ResourceName
 from viam.resource.base import ResourceBase
 from viam.resource.types import Model, ModelFamily
-
+from viam.resource.easy_resource import EasyResource
 from viam.components.sensor import Sensor
 from viam.logging import getLogger
 
@@ -18,9 +18,9 @@ import adafruit_mcp3xxx.mcp3008 as MCP
 LOGGER = getLogger(__name__)
 
 
-class mcp3xxx(Sensor, Reconfigurable):
+class mcp3xxx(Sensor, EasyResource):
     # Defines new model's colon-delimited-triplet
-    MODEL: ClassVar[Model] = Model(ModelFamily("hazalmestci", "sensor"), "mcp300x")
+    MODEL: ClassVar[Model] = Model(ModelFamily("viam-labs", "mcp300x"), "sensor")
 
     # Creates class parameters
     sensor_pin: int
