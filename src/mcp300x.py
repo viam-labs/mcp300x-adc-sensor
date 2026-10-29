@@ -1,19 +1,17 @@
-from typing import ClassVar, Mapping, Any, Optional
-from typing_extensions import Self
+from typing import Any, ClassVar, Mapping, Optional
 
-from viam.module.types import Reconfigurable
+import adafruit_mcp3xxx.mcp3008 as MCP
+import board
+import busio
+import digitalio
+from typing_extensions import Self
+from viam.components.sensor import Sensor
+from viam.logging import getLogger
 from viam.proto.app.robot import ComponentConfig
 from viam.proto.common import ResourceName
 from viam.resource.base import ResourceBase
-from viam.resource.types import Model, ModelFamily
 from viam.resource.easy_resource import EasyResource
-from viam.components.sensor import Sensor
-from viam.logging import getLogger
-
-import busio
-import digitalio
-import board
-import adafruit_mcp3xxx.mcp3008 as MCP
+from viam.resource.types import Model, ModelFamily
 
 LOGGER = getLogger(__name__)
 
